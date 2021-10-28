@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,7 +15,7 @@ namespace Calculator
         public Form1()
         {
             InitializeComponent();
-            Calculate();
+            //Calculate();
         }
         private void Calculate()
         {
@@ -25,6 +25,7 @@ namespace Calculator
                 Complex z2 = new Complex(double.Parse(real2.Text), double.Parse(imagine2.Text));
                 Complex result = new Complex();
                 bool equal = false;
+                byte wrongSign = 0;
                 switch(operation.Text)
                 {
                     case "+":
@@ -43,17 +44,19 @@ namespace Calculator
                         equal = true;
                         break;
                     default:
-                        answer.Text = "Что-то не так";
-                        return;
-                }
-                if (!equal)
+                        wrongSign = 1;
+                        break;
+                }             
+                if (wrongSign == 1)
+                    answer.Text = "Несуществующий знак";
+                else if (!equal)
                     answer.Text = Complex.Answer(result);
                 else
                     answer.Text = Complex.Equal(z1, z2);
             }
-            catch (SystemException)
+            catch (FormatException)
             {
-                answer.Text = "Что-то не так";
+                answer.Text = "Не числовое значение!";
             }
         }
         private void real1_TextChanged(object sender, EventArgs e)
@@ -77,6 +80,11 @@ namespace Calculator
         }
 
         private void operation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Calculate();
+        }
+
+        private void operation_TextChanged(object sender, EventArgs e)
         {
             Calculate();
         }
